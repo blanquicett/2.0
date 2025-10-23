@@ -1,0 +1,135 @@
+:root {
+  --color-primario: #038C8C;
+  --color-secundario: #F29829;
+  --color-fondo: #4EB4D0;
+  --color-texto: #8C7B65;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: var(--color-fondo);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  width: 750px;
+  max-width: 90%;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.formulario {
+  flex: 1;
+  min-width: 300px;
+  padding: 35px 30px;
+}
+
+.formulario h2 {
+  text-align: center;
+  color: var(--color-primario);
+  margin-bottom: 20px;
+}
+
+.formulario form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formulario input,
+.formulario select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  color: var(--color-texto);
+}
+
+.formulario input:focus,
+.formulario select:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 5px rgba(3, 140, 140, 0.4);
+}
+
+.derecha {
+  flex: 1;
+  min-width: 300px;
+  background: var(--color-primario);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+}
+
+.btn-crear {
+  background: var(--color-secundario);
+  border: none;
+  padding: 12px 40px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.btn-crear:hover {
+  background: #f0a84f;
+}
+
+.texto-condiciones {
+  font-size: 0.9em;
+  margin-top: 15px;
+}
+
+.texto-condiciones a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.login-link {
+  background: #fff;
+  color: var(--color-primario);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.login-link a {
+  color: var(--color-primario);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.login-link:hover {
+  background: var(--color-secundario);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .contenedor {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .derecha {
+    border-top: 2px solid var(--color-primario);
+  }
+}

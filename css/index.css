@@ -1,0 +1,121 @@
+/* VARIABLES COLORES */
+:root {
+    --color-primario: #0077b6;
+    --color-secundario: #00b4d8;
+    --color-fondo: #f0f9ff;
+    --color-texto: #0b132b;
+}
+
+/* Reseteo / base */
+html,
+body {
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-fondo) 0%, #d9f5fb 100%);
+    color: var(--color-texto);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* NAVBAR */
+.header {
+    background: var(--color-primario);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.navbar-nav .nav-link {
+    color: #f0f0f0 !important;
+    font-weight: 500;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-light.btn-sm {
+    border-color: #fff;
+    color: #fff;
+}
+
+.btn-outline-light.btn-sm:hover {
+    background: #fff;
+    color: var(--color-primario);
+}
+
+/* Botones principales */
+.btn-primary {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #005b8a;
+    border-color: #005b8a;
+}
+
+/* Cards */
+.card-promo {
+    border: none;
+    border-left: 6px solid var(--color-secundario);
+    background: #fff;
+}
+
+/* Form styling */
+.form-card {
+    background: #ffffffb8;
+    padding: 1.25rem;
+    border-radius: .5rem;
+    box-shadow: 0 6px 18px rgba(13, 45, 55, 0.06);
+}
+
+/* Destinos list */
+.destino-card {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.destino-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Footer */
+.footer {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 2rem 0;
+    color: var(--color-texto);
+}
+
+/* Utilities (small adjustments) */
+.small-muted {
+    color: #6c757d;
+    font-size: .9rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+    .form-card {
+        padding: 1rem;
+    }
+
+    .col-4 {
+        width: 100% !important;
+    }
+}
+
+/* Enlaces globales */
+a {
+    color: var(--color-primario);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-secundario);
+}
