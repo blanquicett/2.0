@@ -237,8 +237,16 @@ $cantidadPasajeros = count(array_filter($_SESSION['datos_reserva']['pasajeros'],
         // Configuración del mapa de asientos
         const capacidad = <?= $vuelo['capacidad'] ?>;
         const asientosOcupados = <?= json_encode($asientosOcupados) ?>;
-        const cantidadPasajeros = <?= $cantidadPasajeros ?>;
-        let asientosSeleccionados = [];
+    // cantidadPasajeros tomada del servidor (fallback) pero recalcularemos en el cliente
+    const cantidadPasajerosServer = <?= $cantidadPasajeros ?> || 1;
+    // Recalcular en cliente contando los pasajeros sin infante que aparecen en la lista
+    const cantidadPasajeros = (function(){
+        const nodes = document.querySelectorAll('#asignacionAsientos .mb-2');
+        if (nodes && nodes.length > 0) return nodes.length;
+        return cantidadPasajerosServer;
+    })();
+    console.log('cantidadPasajeros server=', cantidadPasajerosServer, 'cliente=', cantidadPasajeros);
+    let asientosSeleccionados = [];
 
         // Configuración del layout del avión
         const filas = Math.ceil(capacidad / 6); // 6 asientos por fila (3-3)
@@ -264,13 +272,17 @@ $cantidadPasajeros = count(array_filter($_SESSION['datos_reserva']['pasajeros'],
 
                 if (asientoActual <= capacidad) {
                     const asiento = document.createElement('div');
-                    const numeroAsiento = `${letraFila}${col < 3 ? col + 1 : col}`;
+                    // Calcular número de columna real (sin contar pasillo): 1..6
+                    let colIndex = col < 3 ? col + 1 : col; // col 0->1,1->2,2->3,4->4,5->5,6->6
+                    if (col >= 4) colIndex = col; // ya está ajustado
+                    const numeroAsiento = letraFila + colIndex;
                     asiento.className = 'asiento';
                     asiento.textContent = numeroAsiento;
+                    asiento.setAttribute('data-seat', numeroAsiento);
                     
                     // Verificar si el asiento está ocupado
                     if (asientosOcupados.includes(numeroAsiento)) {
-                        asiento.className += ' ocupado';
+                        asiento.classList.add('ocupado');
                     } else {
                         asiento.addEventListener('click', () => seleccionarAsiento(asiento, numeroAsiento));
                     }
@@ -283,18 +295,20 @@ $cantidadPasajeros = count(array_filter($_SESSION['datos_reserva']['pasajeros'],
 
         function seleccionarAsiento(elemento, numeroAsiento) {
             if (elemento.classList.contains('ocupado')) return;
-            
+            // Toggle selección
             if (elemento.classList.contains('seleccionado')) {
-                // Deseleccionar asiento
                 elemento.classList.remove('seleccionado');
-                asientosSeleccionados = asientosSeleccionados.filter(a => a !== numeroAsiento);
-            } else if (asientosSeleccionados.length < cantidadPasajeros) {
-                // Seleccionar asiento
-                elemento.classList.add('seleccionado');
-                asientosSeleccionados.push(numeroAsiento);
+                asientosSeleccionados = asientosSeleccionados.filter(a => a !== String(numeroAsiento).trim());
             } else {
-                alert('Ya ha seleccionado el máximo de asientos permitidos');
-                return;
+                // Si aún hay espacio para seleccionar, permitir selección
+                if (asientosSeleccionados.length < cantidadPasajeros) {
+                    elemento.classList.add('seleccionado');
+                    asientosSeleccionados.push(String(numeroAsiento).trim());
+                } else {
+                    // Si ya alcanzó el máximo, avisar
+                    alert('Ya ha seleccionado el número máximo de asientos: ' + cantidadPasajeros);
+                    return;
+                }
             }
 
             // Actualizar asignación de asientos
@@ -308,26 +322,36 @@ $cantidadPasajeros = count(array_filter($_SESSION['datos_reserva']['pasajeros'],
         }
 
         function actualizarAsignacionAsientos() {
-            const asignaciones = document.querySelectorAll('.asiento-asignado');
+            const asignaciones = document.querySelectorAll('#asignacionAsientos .mb-2');
             asignaciones.forEach((elem, index) => {
-                if (asientosSeleccionados[index]) {
-                    elem.textContent = ` - Asiento ${asientosSeleccionados[index]}`;
-                    elem.classList.remove('text-primary');
-                    elem.classList.add('text-success');
+                const asiento = asientosSeleccionados[index];
+                const label = elem.querySelector('.asiento-asignado');
+                if (asiento) {
+                    label.textContent = ` - Asiento ${asiento}`;
+                    label.classList.remove('text-primary');
+                    label.classList.add('text-success');
                 } else {
-                    elem.textContent = ' - Pendiente de asignar';
-                    elem.classList.remove('text-success');
-                    elem.classList.add('text-primary');
+                    label.textContent = ' - Pendiente de asignar';
+                    label.classList.remove('text-success');
+                    label.classList.add('text-primary');
                 }
             });
+            // Habilitar botón continuar cuando la cantidad coincida
+            const btn = document.getElementById('btnContinuar');
+            if (btn) btn.disabled = asientosSeleccionados.length !== cantidadPasajeros;
         }
 
-        // Prevenir envío del formulario si no se han seleccionado todos los asientos
+        // Asegurar que al enviar se pasen los asientos seleccionados y validar
         document.getElementById('asientosForm').addEventListener('submit', function(e) {
+            console.log('Enviando asientos:', asientosSeleccionados);
+            document.getElementById('asientosSeleccionados').value = JSON.stringify(asientosSeleccionados);
             if (asientosSeleccionados.length !== cantidadPasajeros) {
                 e.preventDefault();
                 alert('Por favor, seleccione todos los asientos necesarios antes de continuar');
+                return false;
             }
+            // todo: aquí podríamos hacer validaciones adicionales en el cliente
+            return true;
         });
     </script>
 </body>
